@@ -248,7 +248,7 @@ def varOr(population, toolbox, lambda_, cxpb, mutpb):
 
 
 def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
-                   stats=None, halloffame=None, verbose=__debug__):
+                   stats=None, halloffame=None, verbose=__debug__, callback=None):
     """This is the :math:`(\mu + \lambda)` evolutionary algorithm.
 
     :param population: A list of individuals.
@@ -312,6 +312,9 @@ def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
     if verbose:
         print logbook.stream
 
+    if callback is not None:
+        callback(population)
+
     # Begin the generational process
     for gen in range(1, ngen + 1):
         # Vary the population
@@ -326,6 +329,9 @@ def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
         # Update the hall of fame with the generated individuals
         if halloffame is not None:
             halloffame.update(offspring)
+
+        if callback is not None:
+            callback(population, offspring)
 
         # Select the next generation population
         population[:] = toolbox.select(population + offspring, mu)
